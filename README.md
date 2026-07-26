@@ -16,10 +16,18 @@ Use Node.js 20.9 or newer:
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+Before using database-backed routes, replace `DATABASE_URL` in `.env` with a
+PostgreSQL connection string, then initialize the database:
+
+```bash
+npm run db:migrate -- --name init
+```
 
 Verify and run the production build:
 

@@ -1,23 +1,8 @@
-const products = [
-  {
-    number: "01",
-    name: "Product 1",
-    description: "A thoughtful everyday essential, selected to make life feel a little lighter.",
-    color: "bg-[#e8f4ec]",
-  },
-  {
-    number: "02",
-    name: "Product 2",
-    description: "Simple design and useful details come together in one joyful find.",
-    color: "bg-[#fff0c7]",
-  },
-  {
-    number: "03",
-    name: "Product 3",
-    description: "A practical favorite made for calmer routines and brighter moments.",
-    color: "bg-[#e9efff]",
-  },
-];
+import { Suspense } from "react";
+import {
+  ProductGrid,
+  ProductGridSkeleton,
+} from "@/app/components/ProductGrid";
 
 export default function Home() {
   return (
@@ -66,20 +51,9 @@ export default function Home() {
             </div>
             <p className="max-w-sm leading-7 text-ink/55">A growing collection of simple products chosen for usefulness, beauty, and everyday delight.</p>
           </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            {products.map((product) => (
-              <article className="group rounded-[28px] border border-ink/10 bg-cream p-4 transition duration-300 hover:-translate-y-2 hover:shadow-[0_24px_60px_rgba(23,33,27,.1)]" key={product.name}>
-                <div className={`relative aspect-[4/3] overflow-hidden rounded-[20px] ${product.color}`}>
-                  <span className="absolute left-5 top-5 text-xs font-semibold tracking-[.16em] text-ink/45">{product.number}</span>
-                  <div className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 rotate-12 rounded-[32%_68%_64%_36%] bg-white/75 shadow-xl transition duration-500 group-hover:rotate-45 group-hover:scale-110" />
-                </div>
-                <div className="p-4 pb-3 pt-6">
-                  <h3 className="text-xl font-semibold tracking-[-0.03em]">{product.name}</h3>
-                  <p className="mt-3 text-sm leading-6 text-ink/55">{product.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
+          <Suspense fallback={<ProductGridSkeleton />}>
+            <ProductGrid />
+          </Suspense>
         </div>
       </section>
 
