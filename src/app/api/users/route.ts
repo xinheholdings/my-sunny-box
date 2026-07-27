@@ -7,6 +7,13 @@ export async function GET() {
   try {
     const users = await getPrismaClient().user.findMany({
       orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        email: true,
+        displayName: true,
+        usageCount: true,
+        createdAt: true,
+      },
     });
 
     return Response.json({ users });
@@ -38,6 +45,13 @@ export async function POST(request: Request) {
   try {
     const user = await getPrismaClient().user.create({
       data: { email },
+      select: {
+        id: true,
+        email: true,
+        displayName: true,
+        usageCount: true,
+        createdAt: true,
+      },
     });
 
     return Response.json({ user }, { status: 201 });

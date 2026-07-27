@@ -1,4 +1,6 @@
 import { createChatResponse, type ChatMessage } from "../../lib/openai";
+import { getCurrentUser } from "@/lib/auth";
+import { getPrismaClient } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -46,6 +48,32 @@ export async function POST(request: Request) {
 
   try {
     const result = await createChatResponse(messages);
+
+    const user = await getCurrentUser();
+    if (user) {
+      const latestUserMessage = messages.at(-1)!;
+      await getPrismaClient().$transaction([
+        getPrismaClient().chatMessage.create({
+          data: {
+            userId: user.id,
+            role: "user",
+            content: latestUserMessage.content,
+          },
+        }),
+        getPrismaClient().chatMessage.create({
+          data: {
+            userId: user.id,
+            role: "assistant",
+            content: result.text,
+          },
+        }),
+        getPrismaClient().user.update({
+          where: { id: user.id },
+          data: { usageCount: { increment: 1 } },
+        }),
+      ]);
+    }
+
     return Response.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
