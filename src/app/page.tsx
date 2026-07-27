@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import ParticleField from "./components/ParticleField";
+import MobileNavigation from "./components/MobileNavigation";
 
 const assistantCards = [
   {
@@ -65,6 +66,7 @@ export default function Home() {
           <a href="/account">用户中心</a>
           <a className="navContact" href="#about">关于SunnyBox AI</a>
         </div>
+        <MobileNavigation />
       </nav>
 
       <section className="hero" id="top">

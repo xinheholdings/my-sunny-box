@@ -143,6 +143,9 @@
 
 @media (max-width: 820px) {
   .navLinks { display: none; }
+  .headerStatus { margin-left: auto; }
+  .headerStatus > span { display: none; }
+  :global(.chatMobileNavigation) { display: block; }
   .workspace { grid-template-columns: 1fr; height: calc(100vh - 94px); }
   .sidebar { display: none; }
   .messages { padding: 30px 20px; }
@@ -151,7 +154,7 @@
 @media (max-width: 560px) {
   .header, .workspace { width: calc(100% - 24px); }
   .header { height: 70px; }
-  .headerStatus > span { display: none; }
+  .headerStatus button { display: none; }
   .workspace { height: calc(100vh - 82px); min-height: 560px; }
   .promptGrid { margin-left: 48px; grid-template-columns: 1fr; }
   .composerWrap { padding: 12px; }

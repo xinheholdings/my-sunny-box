@@ -2,6 +2,7 @@
 
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import ParticleField from "../components/ParticleField";
+import MobileNavigation from "../components/MobileNavigation";
 import styles from "./chat.module.css";
 
 type Message = {
@@ -171,6 +172,7 @@ export default function ChatClient() {
           <span><i /> AI CORE READY</span>
           <button type="button" onClick={resetChat}>清空对话</button>
         </div>
+        <MobileNavigation className="chatMobileNavigation" />
       </header>
 
       <div className={styles.workspace}>

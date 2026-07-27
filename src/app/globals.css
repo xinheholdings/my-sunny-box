@@ -98,6 +98,72 @@ main { min-height: 100vh; overflow: hidden; position: relative; }
 .navLinks a:hover { color: var(--cyan); }
 .navContact { padding: 11px 17px; border: 1px solid rgba(92,244,255,.45); color: var(--text) !important; }
 
+.mobileNavigation { display: none; position: relative; z-index: 30; }
+.mobileMenuToggle {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-content: center;
+  gap: 5px;
+  padding: 0;
+  border: 1px solid rgba(92,244,255,.4);
+  background: rgba(7,13,21,.92);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mobileMenuToggle span {
+  display: block;
+  width: 19px;
+  height: 1px;
+  background: var(--cyan);
+  transition: transform .2s ease, opacity .2s ease;
+}
+.mobileMenuToggle[aria-expanded="true"] span:first-child { transform: translateY(6px) rotate(45deg); }
+.mobileMenuToggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.mobileMenuToggle[aria-expanded="true"] span:last-child { transform: translateY(-6px) rotate(-45deg); }
+.mobileMenuPanel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(280px, calc(100vw - 32px));
+  padding: 9px;
+  border: 1px solid rgba(92,244,255,.35);
+  background: rgba(5,9,15,.98);
+  box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 28px rgba(92,244,255,.08);
+}
+.mobileMenuPanel a,
+.mobileMenuPanel button {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid rgba(126,168,200,.13);
+  background: transparent;
+  color: #c8d3e2;
+  font: 12px var(--font-geist-sans);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mobileMenuPanel a:hover,
+.mobileMenuPanel a:focus-visible,
+.mobileMenuPanel button:hover,
+.mobileMenuPanel button:focus-visible {
+  outline: none;
+  background: rgba(92,244,255,.07);
+  color: var(--cyan);
+}
+.mobileMenuPanel .mobileRegisterLink {
+  border-bottom: 0;
+  background: var(--cyan);
+  color: #041014;
+  font-weight: 750;
+}
+.mobileMenuPanel button:disabled { opacity: .55; cursor: wait; }
+
 .hero {
   position: relative;
   min-height: 720px;
@@ -418,7 +484,8 @@ footer { min-height: 120px; display: flex; align-items: center; justify-content:
 @media (max-width: 640px) {
   .nav, .hero, .section, footer { width: min(100% - 32px, 1180px); }
   .nav { height: 76px; }
-  .navLinks a:not(.navContact) { display: none; }
+  .navLinks { display: none; }
+  .mobileNavigation { display: block; }
   .hero { min-height: auto; padding: 65px 0 80px; gap: 60px; }
   h1 { font-size: clamp(58px, 20vw, 86px); }
   .heroActions { flex-direction: column; align-items: stretch; }
