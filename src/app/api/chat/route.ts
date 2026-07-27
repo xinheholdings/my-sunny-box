@@ -51,11 +51,21 @@ export async function POST(request: Request) {
   }
 
   const user = await getCurrentUser();
-  const reservation = user
-    ? await reserveDailyAiUsage(user.id, user.plan)
-    : null;
 
-  if (reservation && !reservation.allowed) {
+  if (!user) {
+    return Response.json({ error: "请先登录" }, { status: 401 });
+  }
+
+  if (user.plan !== "PRO") {
+    return Response.json(
+      { error: "AI功能仅对PRO会员开放，请升级后使用" },
+      { status: 403 },
+    );
+  }
+
+  const reservation = await reserveDailyAiUsage(user.id, user.plan);
+
+  if (!reservation.allowed) {
     return Response.json(
       { error: "今日额度已用完，请升级Pro" },
       { status: 429 },
@@ -68,42 +78,38 @@ export async function POST(request: Request) {
     const result = await createChatResponse(messages);
     modelCompleted = true;
 
-    if (user) {
-      const latestUserMessage = messages.at(-1)!;
-      await getPrismaClient().$transaction([
-        getPrismaClient().chatMessage.create({
-          data: {
-            userId: user.id,
-            role: "user",
-            content: latestUserMessage.content,
-          },
-        }),
-        getPrismaClient().chatMessage.create({
-          data: {
-            userId: user.id,
-            role: "assistant",
-            content: result.text,
-          },
-        }),
-        getPrismaClient().user.update({
-          where: { id: user.id },
-          data: { usageCount: { increment: 1 } },
-        }),
-      ]);
-    }
+    const latestUserMessage = messages.at(-1)!;
+    await getPrismaClient().$transaction([
+      getPrismaClient().chatMessage.create({
+        data: {
+          userId: user.id,
+          role: "user",
+          content: latestUserMessage.content,
+        },
+      }),
+      getPrismaClient().chatMessage.create({
+        data: {
+          userId: user.id,
+          role: "assistant",
+          content: result.text,
+        },
+      }),
+      getPrismaClient().user.update({
+        where: { id: user.id },
+        data: { usageCount: { increment: 1 } },
+      }),
+    ]);
 
     return Response.json({
       ...result,
-      usage: reservation
-        ? {
-            used: reservation.used,
-            limit: reservation.limit,
-            remaining: reservation.limit - reservation.used,
-          }
-        : null,
+      usage: {
+        used: reservation.used,
+        limit: reservation.limit,
+        remaining: reservation.limit - reservation.used,
+      },
     });
   } catch (error) {
-    if (user && reservation?.allowed && !modelCompleted) {
+    if (reservation.allowed && !modelCompleted) {
       await releaseDailyAiUsage(user.id, reservation.date).catch((releaseError) => {
         console.error("AI usage reservation rollback failed", releaseError);
       });
