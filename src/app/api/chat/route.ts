@@ -1,5 +1,9 @@
 import { createChatResponse, type ChatMessage } from "../../lib/openai";
 import { getCurrentUser } from "@/lib/auth";
+import {
+  releaseDailyAiUsage,
+  reserveDailyAiUsage,
+} from "@/lib/ai-usage";
 import { getPrismaClient } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -46,10 +50,24 @@ export async function POST(request: Request) {
     );
   }
 
+  const user = await getCurrentUser();
+  const reservation = user
+    ? await reserveDailyAiUsage(user.id, user.plan)
+    : null;
+
+  if (reservation && !reservation.allowed) {
+    return Response.json(
+      { error: "今日额度已用完，请升级Pro" },
+      { status: 429 },
+    );
+  }
+
+  let modelCompleted = false;
+
   try {
     const result = await createChatResponse(messages);
+    modelCompleted = true;
 
-    const user = await getCurrentUser();
     if (user) {
       const latestUserMessage = messages.at(-1)!;
       await getPrismaClient().$transaction([
@@ -74,8 +92,23 @@ export async function POST(request: Request) {
       ]);
     }
 
-    return Response.json(result);
+    return Response.json({
+      ...result,
+      usage: reservation
+        ? {
+            used: reservation.used,
+            limit: reservation.limit,
+            remaining: reservation.limit - reservation.used,
+          }
+        : null,
+    });
   } catch (error) {
+    if (user && reservation?.allowed && !modelCompleted) {
+      await releaseDailyAiUsage(user.id, reservation.date).catch((releaseError) => {
+        console.error("AI usage reservation rollback failed", releaseError);
+      });
+    }
+
     const message = error instanceof Error ? error.message : "Unknown error";
 
     if (message === "OPENAI_API_KEY_MISSING") {

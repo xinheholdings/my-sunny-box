@@ -32,8 +32,9 @@
 .emptyState p { margin: 8px 0; color: #718095; font-size: 12px; }
 .emptyState a { color: #5cf4ff; font-size: 11px; }
 .actions { display: flex; gap: 10px; margin-top: 22px; }
-.action, .signOut { padding: 12px 15px; border: 1px solid rgba(126,168,200,.24); background: transparent; color: #a8b5c7; font-size: 11px; cursor: pointer; }
+.action, .upgradeAction, .signOut { padding: 12px 15px; border: 1px solid rgba(126,168,200,.24); background: transparent; color: #a8b5c7; font-size: 11px; cursor: pointer; }
 .action { background: #5cf4ff; color: #041014; border-color: #5cf4ff; font-weight: 700; }
+.upgradeAction { border-color: rgba(255,214,84,.38); color: #ffd654; }
 .signOut:hover { border-color: #ff718a; color: #ff9bae; }
 .signOut:disabled { opacity: .5; cursor: wait; }
 .savedGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }

@@ -42,6 +42,7 @@ export default async function AccountPage() {
         <div className={styles.navLinks}>
           <Link href="/">首页</Link>
           <Link href="/chat">AI助手</Link>
+          <Link href="/pricing">套餐价格</Link>
           <Link href="/#about">关于我们</Link>
         </div>
       </nav>
@@ -54,7 +55,7 @@ export default async function AccountPage() {
             <h1>{user.displayName || "SunnyBox 用户"}</h1>
             <p>{user.email}</p>
           </div>
-          <span className={styles.plan}>SUNNYBOX ACCOUNT</span>
+          <span className={styles.plan}>{user.plan === "PRO" ? "SUNNYBOX PRO" : "FREE PLAN"}</span>
         </header>
 
         <div className={styles.grid}>
@@ -65,6 +66,8 @@ export default async function AccountPage() {
               <div><span>邮箱</span><b>{user.email}</b></div>
               <div><span>创建日期</span><b>{user.createdAt.toLocaleDateString("zh-CN")}</b></div>
               <div><span>账户 ID</span><b>{user.id.slice(0, 8)}…</b></div>
+              <div><span>套餐</span><b>{user.plan}</b></div>
+              <div><span>订阅状态</span><b>{user.subscriptionStatus}</b></div>
             </div>
             <div className={styles.stats}>
               <div className={styles.stat}><strong>{user.usageCount}</strong><span>AI 使用次数</span></div>
@@ -72,6 +75,7 @@ export default async function AccountPage() {
             </div>
             <div className={styles.actions}>
               <Link className={styles.action} href="/chat">继续对话</Link>
+              {user.plan === "FREE" && <Link className={styles.upgradeAction} href="/pricing">升级 Pro</Link>}
               <LogoutButton />
             </div>
           </section>

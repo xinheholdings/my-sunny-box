@@ -61,6 +61,9 @@ export async function getCurrentUser() {
           email: true,
           displayName: true,
           usageCount: true,
+          role: true,
+          plan: true,
+          subscriptionStatus: true,
           createdAt: true,
         },
       },
@@ -77,6 +80,14 @@ export function publicUser(user: NonNullable<Awaited<ReturnType<typeof getCurren
     email: user.email,
     displayName: user.displayName,
     usageCount: user.usageCount,
+    role: user.role,
+    plan: user.plan,
+    subscriptionStatus: user.subscriptionStatus,
     createdAt: user.createdAt,
   };
+}
+
+export async function getCurrentAdmin() {
+  const user = await getCurrentUser();
+  return user?.role === "ADMIN" ? user : null;
 }

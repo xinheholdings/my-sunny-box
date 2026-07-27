@@ -7,16 +7,38 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum SubscriptionStatus {
+  NONE
+  ACTIVE
+  CANCELED
+}
+
 model User {
-  id            String        @id @default(cuid())
-  email         String        @unique
-  displayName   String?
-  passwordHash  String?
-  usageCount    Int           @default(0)
-  createdAt     DateTime      @default(now())
-  sessions      Session[]
-  conversations ChatMessage[]
-  favorites     Favorite[]
+  id                   String             @id @default(cuid())
+  email                String             @unique
+  displayName          String?
+  passwordHash         String?
+  usageCount           Int                @default(0)
+  role                 Role               @default(USER)
+  plan                 Plan               @default(FREE)
+  subscriptionStatus   SubscriptionStatus @default(NONE)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  createdAt            DateTime           @default(now())
+  sessions             Session[]
+  conversations        ChatMessage[]
+  favorites            Favorite[]
+  dailyAiUsage         DailyAiUsage[]
 }
 
 model Product {
@@ -52,6 +74,19 @@ model ChatMessage {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+model DailyAiUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([date])
 }
 
 model Favorite {

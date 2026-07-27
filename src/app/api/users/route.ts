@@ -1,9 +1,13 @@
 import { handleApiError } from "@/lib/api-error";
+import { requireAdminApi } from "@/lib/admin";
 import { getPrismaClient } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
 export async function GET() {
+  const authorization = await requireAdminApi();
+  if (authorization.response) return authorization.response;
+
   try {
     const users = await getPrismaClient().user.findMany({
       orderBy: { createdAt: "desc" },
@@ -12,6 +16,10 @@ export async function GET() {
         email: true,
         displayName: true,
         usageCount: true,
+        role: true,
+        plan: true,
+        subscriptionStatus: true,
+        stripeCustomerId: true,
         createdAt: true,
       },
     });
@@ -23,6 +31,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const authorization = await requireAdminApi();
+  if (authorization.response) return authorization.response;
+
   let body: unknown;
 
   try {
@@ -50,6 +61,10 @@ export async function POST(request: Request) {
         email: true,
         displayName: true,
         usageCount: true,
+        role: true,
+        plan: true,
+        subscriptionStatus: true,
+        stripeCustomerId: true,
         createdAt: true,
       },
     });
