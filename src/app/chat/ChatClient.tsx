@@ -15,7 +15,7 @@ const starterMessage: Message = {
   id: "welcome",
   role: "assistant",
   content:
-    "你好，我是 Nova AI。你可以和我一起梳理想法、学习新知识，或推进一个真正的产品。今天想从哪里开始？",
+    "你好，我是 SunnyBox AI。你可以和我一起梳理想法、学习新知识，或推进一个真正的产品。今天想从哪里开始？",
 };
 
 const prompts = [
@@ -159,7 +159,7 @@ export default function ChatClient() {
       <header className={styles.header}>
         <a className={styles.brand} href="/">
           <span className={styles.signal}><i /></span>
-          <span>NOVA <b>AI PRODUCT</b></span>
+          <span>SunnyBox <b>AI</b></span>
         </a>
         <nav className={styles.navLinks} aria-label="主导航">
           <a href="/">首页</a>
@@ -177,9 +177,9 @@ export default function ChatClient() {
         <aside className={styles.sidebar}>
           <a href="/" className={styles.backLink}>← 返回首页</a>
           <div>
-            <p className={styles.eyebrow}>NOVA AI / ASSISTANT</p>
+            <p className={styles.eyebrow}>SUNNYBOX AI / ASSISTANT</p>
             <h1>AI助手</h1>
-            <p>从问题到行动，Nova 始终与你在同一个上下文中。</p>
+            <p>从问题到行动，SunnyBox AI 始终与你在同一个上下文中。</p>
           </div>
           <div className={styles.systemCard}>
             <div><span>连接状态</span><b>安全连接</b></div>
@@ -200,7 +200,7 @@ export default function ChatClient() {
                 </div>
                 <div>
                   <p className={styles.messageLabel}>
-                    {message.role === "assistant" ? "NOVA AI" : "YOU"}
+                    {message.role === "assistant" ? "SUNNYBOX AI" : "YOU"}
                   </p>
                   <div className={styles.bubble}>
                     <TypewriterText
